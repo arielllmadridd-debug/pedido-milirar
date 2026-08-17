@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pedidos de alimento</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #0d1b3d; /* azul militar */
+      color: #f1f1f1; 
+      padding: 20px; 
+    }
+    h1, h2, h3 { 
+      text-align: center; 
+      color: #ffd700; /* amarillo dorado */
+      text-transform: uppercase;
+    }
+    h1 { 
+      border-bottom: 3px solid #695c0d;
+      padding-bottom: 10px;
+    }
+    .hidden { display: none; }
+    button { 
+      padding: 12px 24px; 
+      margin: 10px; 
+      cursor: pointer; 
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button.primary { 
+      background-color: #ffd700; /* amarillo */
+      color: #0d1b3d; 
+    }
+    button.primary:hover { 
+      background-color: #e6c200; 
+    }
+    button.secondary { 
+      background-color: #555; /* gris */
+      color: #fff; 
+    }
+    button.secondary:hover { 
+      background-color: #777; 
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 20px; 
+      background-color: #1a2a4f;
+    }
+    th, td { 
+      border: 1px solid #ffd700; 
+      padding: 10px; 
+      text-align: center; 
+    }
+    th { 
+      background: #0d1b3d; 
+      color: #ffd700; 
+      text-transform: uppercase;
+    }
+    input { 
+      background-color: #0d1b3d; 
+      color: #ffd700; 
+      border: 1px solid #ffd700; 
+      padding: 5px; 
+      text-align: center;
+    }
+    /* Botones ocupan todo el ancho en móvil */
+button {
+  width: 100%;
+  max-width: 400px; /* en pantallas grandes se limita */
+}
+
+/* Tabla con scroll horizontal en móvil */
+table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Textos más pequeños en pantallas chicas */
+@media (max-width: 600px) {
+  h1, h2, h3 {
+    font-size: 1.2em;
+  }
+  td, th {
+    font-size: 0.9em;
+    padding: 6px;
+  }
+}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <!-- Pantalla inicial estilo militar -->
+  <div id="inicio">
+    <h2>FUERZA ARMADAS DE HONDURAS</h2>
+    <h3>FUERZA AÉREA HONDUREÑA</h3>
+    <h3>ACADEMIA MILITAR DE AVIACIÓN<br>"CAP. ROBERTO RAUL BARAHONA LAGOS"</h3>
+
+    <h1>📚 INVENTARIO MILITAR 📚</h1>
+    <p style="text-align:center;">Acceda a la gestión de productos, pedidos y recursos con estilo institucional.</p>
+
+    <button class="primary" onclick="mostrarSeccion('viewer')">🚚 GENERAR PEDIDO </button>
+    <button class="secondary" onclick="mostrarSeccion('adminLogin')">📄 VER ADMINISTRADOR 📄</button>
+  </div>
+
+  <!-- Login administrador -->
+  <div id="adminLogin" class="hidden">
+    <h2>🔑 Ingreso Administrador</h2>
+    <input type="password" id="adminPass" placeholder="Ingrese contraseña">
+    <button class="primary" onclick="loginAdmin()">Entrar</button>
+  </div>
+
+  <!-- Sección administrador -->
+  <div id="admin" class="hidden">
+    <h2>👨‍💻 Administrador - Inventario</h2>
+    <form id="productoForm">
+      <input type="text" id="descripcion" placeholder="Descripción" required>
+      <input type="number" id="precio" placeholder="Precio" required>
+      <input type="number" id="cantidad" placeholder="Cantidad" required>
+      <button class="primary" type="submit">Agregar Producto</button>
+    </form>
+  </div>
+
+  <!-- Sección usuario -->
+  <div id="viewer" class="hidden">
+    <h2>👀 Usuario - Pedidos</h2>
+    <button class="primary" onclick="descargarExcel()">📥 Descargar en Excel</button>
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Código</th><th>Cantidad</th><th>Descripción</th><th>Precio</th><th>Total</th><th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+<h3 id="totalGeneral">TOTAL GENERAL: L 0.00</h3>
+
+    <!-- Sección Otros -->
+    <h3>➕ Agregar producto extra</h3>
+    <form id="otrosForm">
+      <input type="text" id="otroDesc" placeholder="Descripción" required>
+      <input type="number" id="otroPrecio" placeholder="Precio" required>
+      <input type="number" id="otroCantidad" placeholder="Cantidad" required>
+      <button class="secondary" type="submit">Agregar</button>
+    </form>
+  </div>
+
+  <script>
+    const PASSWORD = "1234"; 
+    let contadorOtros = 1;
+
+    let inventario = [
+      
+{id:48, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:1475},
+{id:49, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:1275},
+{id:2, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2100},
+{id:60, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:1326},
+{id:57, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:1088},
+{id:64, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:306},
+{id:214, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:123},
+{id:63, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:32},
+{id:51, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:510},
+{id:189, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:900},
+{id:205, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:95},
+{id:69, cantidad:1, descripcion:"SABORINA (Exento)", precio:56},
+{id:218, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:40},
+{id:84, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:210},
+{id:81, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:130},
+
+{id:49, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:286},
+{id:50, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:403},
+{id:3, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:519},
+{id:61, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:635},
+{id:58, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:752},
+{id:65, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:868},
+{id:215, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:985},
+{id:64, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:1101},
+{id:52, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:1217},
+{id:190, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:1334},
+{id:206, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:1450},
+{id:70, cantidad:1, descripcion:"SABORINA (Exento)", precio:1567},
+{id:219, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:1683},
+{id:85, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:1799},
+{id:82, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:1916},
+{id:50, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:2032},
+{id:51, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:2148},
+{id:4, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2265},
+{id:62, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:2381},
+{id:59, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:2498},
+{id:66, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:2614},
+{id:216, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:2730},
+{id:65, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:2847},
+{id:53, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:2963},
+{id:191, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:3080},
+{id:207, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:3196},
+{id:71, cantidad:1, descripcion:"SABORINA (Exento)", precio:3312},
+{id:220, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:3429},
+{id:86, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:3545},
+{id:83, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:3662},
+{id:51, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:3778},
+{id:52, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:3894},
+{id:5, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:4011},
+{id:63, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:4127},
+{id:60, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:4243},
+{id:67, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:4360},
+{id:217, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:4476},
+{id:66, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:4593},
+{id:54, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:4709},
+{id:192, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:4825},
+{id:208, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:4942},
+{id:72, cantidad:1, descripcion:"SABORINA (Exento)", precio:5058},
+{id:221, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:5175},
+{id:87, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:5291},
+{id:84, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:5407},
+{id:52, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:5524},
+{id:53, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:5640},
+{id:6, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:5757},
+{id:64, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:5873},
+{id:61, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:5989},
+{id:68, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:6106},
+{id:218, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:6222},
+{id:67, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:6338},
+{id:55, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:6455},
+{id:193, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:6571},
+{id:209, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:6688},
+
+      
+      // 👉 agrega aquí el resto de tus productos
+    ];
+
+    function mostrarSeccion(id) {
+      document.querySelectorAll("div").forEach(div => div.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      if (id === "viewer") mostrarInventario(false);
+    }
+
+    function loginAdmin() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === PASSWORD) {
+        mostrarSeccion("admin");
+        document.getElementById("viewer").classList.remove("hidden");
+        mostrarInventario(true);
+      } else {
+        alert("Contraseña incorrecta ❌");
+      }
+    }
+
+function mostrarInventario(esAdmin) {
+  const tbody = document.querySelector("#tabla tbody");
+  tbody.innerHTML = "";
+  let totalGeneral = 0;
+
+  inventario.forEach(prod => {
+    const subtotal = prod.precio * prod.cantidad;
+    totalGeneral += subtotal;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${prod.id}</td>
+      <td><input type="number" value="${prod.cantidad}" onchange="cambiarCantidad(${JSON.stringify(prod.id)}, this.value)"></td>
+      <td>${prod.descripcion}</td>
+      <td>L ${prod.precio.toFixed(2)}</td>
+      <td>L ${subtotal.toFixed(2)}</td>
+      <td>${esAdmin ? `<button class="secondary" onclick="borrarProducto(${JSON.stringify(prod.id)})">❌</button>` : ""}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Mostrar el total general
+  document.getElementById("totalGeneral").innerText = "TOTAL GENERAL: L " + totalGeneral.toFixed(2);
+}
+
+    function cambiarCantidad(id, nuevaCantidad) {
+      inventario.forEach(prod => {
+        if (prod.id == id) {
+          prod.cantidad = parseInt(nuevaCantidad);
+        }
+      });
+      mostrarInventario(true);
+    }
+
+    document.getElementById("productoForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const descripcion = document.getElementById("descripcion").value;
+      const precio = parseFloat(document.getElementById("precio").value);
+      const cantidad = parseInt(document.getElementById("cantidad").value);
+      const nuevo = {id: inventario.length+100, descripcion, precio, cantidad};
+      inventario.push(nuevo);
+      mostrarInventario(true);
+      this.reset();
+    });
+
+    function borrarProducto(id) {
+      inventario = inventario.filter(prod => prod.id != id);
+      mostrarInventario(true);
+    }
+
+    function descargarExcel() {
+      const datos = inventario.map(prod => ({
+        Código: prod.id,
+        Cantidad: prod.cantidad,
+        Descripción: prod.descripcion,
+        Precio: prod.precio,
+        Total: prod.precio * prod.cantidad
+      }));
+      const hoja = XLSX.utils.json_to_sheet(datos);
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, "Pedido");
+      XLSX.writeFile(libro, "pedido.xlsx");
+    }
+     
+    document.getElementById("otrosForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const desc = document.getElementById("otroDesc").value;
+      const precio = parseFloat(document.getElementById("otroPrecio").value);
+      const cantidad = parseInt(document.getElementById("otroCantidad").value);
+      inventario.push({id:"OTRO-"+contadorOtros, descripcion:desc, precio:precio, cantidad:cantidad});
+      contadorOtros++;
+      mostrarInventario(false);
+      this.reset();
+    });
+  </script>
+</body>
+</html>
