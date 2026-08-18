@@ -96,6 +96,9 @@ table {
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 <body>
   <!-- Pantalla inicial estilo militar -->
   <div id="inicio">
@@ -131,7 +134,7 @@ table {
   <!-- Sección usuario -->
   <div id="viewer" class="hidden">
     <h2>👀 Usuario - Pedidos</h2>
-    <button class="primary" onclick="descargarExcel()">📥 Descargar en Excel</button>
+    <button class="primary" onclick="descargarPDF()">📥 Descargar en PDF</button>
     <table id="tabla">
       <thead>
         <tr>
@@ -158,78 +161,78 @@ table {
 
     let inventario = [
       
-{id:48, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:1475},
-{id:49, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:1275},
-{id:2, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2100},
-{id:60, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:1326},
-{id:57, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:1088},
-{id:64, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:306},
-{id:214, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:123},
-{id:63, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:32},
-{id:51, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:510},
-{id:189, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:900},
-{id:205, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:95},
-{id:69, cantidad:1, descripcion:"SABORINA (Exento)", precio:56},
-{id:218, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:40},
-{id:84, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:210},
-{id:81, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:130},
+{id:48, cantidad:0, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:1475},
+{id:49, cantidad:0, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:1275},
+{id:2, cantidad:0, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2100},
+{id:60, cantidad:0, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:1326},
+{id:57, cantidad:0, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:1088},
+{id:64, cantidad:0, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:306},
+{id:214, cantidad:0, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:123},
+{id:63, cantidad:0, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:32},
+{id:51, cantidad:0, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:510},
+{id:189, cantidad:0, descripcion:"CAJA DE JUGOS YA (Exento)", precio:900},
+{id:205, cantidad:0, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:95},
+{id:69, cantidad:0, descripcion:"SABORINA (Exento)", precio:56},
+{id:218, cantidad:0, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:40},
+{id:84, cantidad:0, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:210},
+{id:81, cantidad:0, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:130},
 
-{id:49, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:286},
-{id:50, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:403},
-{id:3, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:519},
-{id:61, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:635},
-{id:58, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:752},
-{id:65, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:868},
-{id:215, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:985},
-{id:64, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:1101},
-{id:52, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:1217},
-{id:190, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:1334},
-{id:206, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:1450},
-{id:70, cantidad:1, descripcion:"SABORINA (Exento)", precio:1567},
-{id:219, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:1683},
-{id:85, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:1799},
-{id:82, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:1916},
-{id:50, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:2032},
-{id:51, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:2148},
-{id:4, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2265},
-{id:62, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:2381},
-{id:59, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:2498},
-{id:66, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:2614},
-{id:216, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:2730},
-{id:65, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:2847},
-{id:53, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:2963},
-{id:191, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:3080},
-{id:207, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:3196},
-{id:71, cantidad:1, descripcion:"SABORINA (Exento)", precio:3312},
-{id:220, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:3429},
-{id:86, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:3545},
-{id:83, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:3662},
-{id:51, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:3778},
-{id:52, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:3894},
-{id:5, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:4011},
-{id:63, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:4127},
-{id:60, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:4243},
-{id:67, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:4360},
-{id:217, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:4476},
-{id:66, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:4593},
-{id:54, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:4709},
-{id:192, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:4825},
-{id:208, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:4942},
-{id:72, cantidad:1, descripcion:"SABORINA (Exento)", precio:5058},
-{id:221, cantidad:1, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:5175},
-{id:87, cantidad:1, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:5291},
-{id:84, cantidad:1, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:5407},
-{id:52, cantidad:1, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:5524},
-{id:53, cantidad:1, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:5640},
-{id:6, cantidad:1, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:5757},
-{id:64, cantidad:1, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:5873},
-{id:61, cantidad:1, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:5989},
-{id:68, cantidad:1, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:6106},
-{id:218, cantidad:1, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:6222},
-{id:67, cantidad:1, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:6338},
-{id:55, cantidad:1, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:6455},
-{id:193, cantidad:1, descripcion:"CAJA DE JUGOS YA (Exento)", precio:6571},
-{id:209, cantidad:1, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:6688},
+{id:49, cantidad:0, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:286},
+{id:50, cantidad:0, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:403},
+{id:3, cantidad:0, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:519},
+{id:61, cantidad:0, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:635},
+{id:58, cantidad:0, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:752},
+{id:65, cantidad:0, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:868},
+{id:215, cantidad:0, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:985},
+{id:64, cantidad:0, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:1101},
+{id:52, cantidad:0, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:1217},
+{id:190, cantidad:0, descripcion:"CAJA DE JUGOS YA (Exento)", precio:1334},
+{id:206, cantidad:0, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:1450},
+{id:70, cantidad:0, descripcion:"SABORINA (Exento)", precio:1567},
+{id:219, cantidad:0, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:1683},
+{id:85, cantidad:0, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:1799},
+{id:82, cantidad:0, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:1916},
+{id:50, cantidad:0, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:2032},
+{id:51, cantidad:0, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:2148},
+{id:4, cantidad:0, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:2265},
+{id:62, cantidad:0, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:2381},
+{id:59, cantidad:0, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:2498},
+{id:66, cantidad:0, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:2614},
+{id:216, cantidad:0, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:2730},
+{id:65, cantidad:0, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:2847},
+{id:53, cantidad:0, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:2963},
+{id:191, cantidad:0, descripcion:"CAJA DE JUGOS YA (Exento)", precio:3080},
+{id:207, cantidad:0, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:3196},
+{id:71, cantidad:0, descripcion:"SABORINA (Exento)", precio:3312},
+{id:220, cantidad:0, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:3429},
+{id:86, cantidad:0, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:3545},
+{id:83, cantidad:0, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:3662},
+{id:51, cantidad:0, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:3778},
+{id:52, cantidad:0, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:3894},
+{id:5, cantidad:0, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:4011},
+{id:63, cantidad:0, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:4127},
+{id:60, cantidad:0, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:4243},
+{id:67, cantidad:0, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:4360},
+{id:217, cantidad:0, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:4476},
+{id:66, cantidad:0, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:4593},
+{id:54, cantidad:0, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:4709},
+{id:192, cantidad:0, descripcion:"CAJA DE JUGOS YA (Exento)", precio:4825},
+{id:208, cantidad:0, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:4942},
+{id:72, cantidad:0, descripcion:"SABORINA (Exento)", precio:5058},
+{id:221, cantidad:0, descripcion:"RISTRA SABOR Y COLOR (Exento)", precio:5175},
+{id:87, cantidad:0, descripcion:"UNIDAD DE GALON DE KETCHUP (Exento)", precio:5291},
+{id:84, cantidad:0, descripcion:"UNIDAD DE GALON DE CHILE (Exento)", precio:5407},
+{id:52, cantidad:0, descripcion:"QQ DE ARROZ PRECOCIDO MANHATTAN (Exento)", precio:5524},
+{id:53, cantidad:0, descripcion:"QQ DE ARROZ BLANCO (Exento)", precio:5640},
+{id:6, cantidad:0, descripcion:"QUINTAL DE FRIJOLES (Exento)", precio:5757},
+{id:64, cantidad:0, descripcion:"CAJA DE MANTECA ISSIMA KILO (Exento)", precio:5873},
+{id:61, cantidad:0, descripcion:"CAJA DE PASTA DE TOMATE CAMPO F (Exento)", precio:5989},
+{id:68, cantidad:0, descripcion:"FARDO DE HARINA DE TRIGO (Exento)", precio:6106},
+{id:218, cantidad:0, descripcion:"BOLSA DE LECHE INSTANTANEA (Exento)", precio:6222},
+{id:67, cantidad:0, descripcion:"UNIDAD BOLSA DE AVENA (Exento)", precio:6338},
+{id:55, cantidad:0, descripcion:"FARDO DE AZUCAR DE 4 LBRA (Exento)", precio:6455},
+{id:193, cantidad:0, descripcion:"CAJA DE JUGOS YA (Exento)", precio:6571},
+{id:209, cantidad:0, descripcion:"UNIDAD DE BOLSA DE CAFE (Exento)", precio:6688},
 
       
       // 👉 agrega aquí el resto de tus productos
@@ -302,19 +305,29 @@ function mostrarInventario(esAdmin) {
       mostrarInventario(true);
     }
 
-    function descargarExcel() {
-      const datos = inventario.map(prod => ({
-        Código: prod.id,
-        Cantidad: prod.cantidad,
-        Descripción: prod.descripcion,
-        Precio: prod.precio,
-        Total: prod.precio * prod.cantidad
-      }));
-      const hoja = XLSX.utils.json_to_sheet(datos);
-      const libro = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(libro, hoja, "Pedido");
-      XLSX.writeFile(libro, "pedido.xlsx");
-    }
+    function descargarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Título
+  doc.setFontSize(16);
+  doc.text("Inventario Militar", 14, 20);
+
+  // Convierte la tabla HTML en PDF
+  doc.autoTable({ 
+    html: '#tabla', 
+    startY: 30,
+    styles: { fontSize: 10 }
+  });
+
+  // Agregar total general
+  const totalGeneral = inventario.reduce((acc, prod) => acc + (prod.precio * prod.cantidad), 0);
+  doc.text("TOTAL GENERAL: L " + totalGeneral.toFixed(2), 14, doc.lastAutoTable.finalY + 10);
+
+  // Guardar archivo
+  doc.save("inventario.pdf");
+}
+
      
     document.getElementById("otrosForm").addEventListener("submit", function(e) {
       e.preventDefault();
