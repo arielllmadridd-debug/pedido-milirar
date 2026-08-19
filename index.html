@@ -96,8 +96,44 @@ table {
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+<!-- Librerías necesarias -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+function descargarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Título
+  doc.setFontSize(16);
+  doc.text("Inventario Militar", 14, 20);
+
+  // Convertir inventario a filas
+  const filas = inventario.map(prod => [
+    prod.id,
+    prod.cantidad,
+    prod.descripcion,
+    "L " + prod.precio.toFixed(2),
+    "L " + (prod.precio * prod.cantidad).toFixed(2)
+  ]);
+
+  // Encabezados
+  doc.autoTable({
+    head: [["Código", "Cantidad", "Descripción", "Precio", "Subtotal"]],
+    body: filas,
+    startY: 30,
+    styles: { fontSize: 10 }
+  });
+
+  // Total general
+  const totalGeneral = inventario.reduce((acc, prod) => acc + (prod.precio * prod.cantidad), 0);
+  doc.text("TOTAL GENERAL: L " + totalGeneral.toFixed(2), 14, doc.lastAutoTable.finalY + 10);
+
+  // Guardar archivo
+  doc.save("inventario.pdf");
+}
+</script>
 
 <body>
   <!-- Pantalla inicial estilo militar -->
