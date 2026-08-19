@@ -316,7 +316,7 @@ function mostrarInventario(esAdmin) {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text("Inventario Militar", 14, 20);
+    doc.text("Pedido Generado", 14, 20);
 
     const filas = inventario.map(prod => [
       prod.id,
