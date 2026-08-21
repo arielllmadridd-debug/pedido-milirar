@@ -242,7 +242,26 @@ table {
       
       // 👉 agrega aquí el resto de tus productos
     ];
+// 2. Guardar y cargar inventario en LocalStorage
+  function guardarInventario() {
+    localStorage.setItem("inventario", JSON.stringify(inventario));
+  }
 
+  function cargarInventario() {
+    const data = localStorage.getItem("inventario");
+    if (data) {
+      inventario = JSON.parse(data);
+    }
+  }
+    // Cambiar cantidad y guardar
+function cambiarCantidad(id, nuevaCantidad) {
+  const prod = inventario.find(p => p.id == id);
+  if (prod) {
+    prod.cantidad = parseInt(nuevaCantidad) || 0;
+    guardarInventario();   // 🔹 aquí se guarda el cambio
+    mostrarInventario(true); // refresca la tabla
+  }
+}
     function mostrarSeccion(id) {
       document.querySelectorAll("div").forEach(div => div.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
@@ -348,6 +367,9 @@ function mostrarInventario(esAdmin) {
       mostrarInventario(false);
       this.reset();
     });
+    cargarInventario();
+mostrarInventario(true); // o false si no es admin
+
   </script>
 </body>
 </html>
