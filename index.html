@@ -365,6 +365,7 @@ function mostrarInventario(esAdmin) {
       const cantidad = parseInt(document.getElementById("otroCantidad").value);
       inventario.push({id:"OTRO-"+contadorOtros, descripcion:desc, precio:precio, cantidad:cantidad});
       contadorOtros++;
+      guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
       mostrarInventario(false);
       this.reset();
     });
