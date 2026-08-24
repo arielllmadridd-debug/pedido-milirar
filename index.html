@@ -320,6 +320,7 @@ function mostrarInventario(esAdmin) {
       const cantidad = parseInt(document.getElementById("cantidad").value);
       const nuevo = {id: inventario.length+100, descripcion, precio, cantidad};
       inventario.push(nuevo);
+      guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
       mostrarInventario(true);
       this.reset();
     });
