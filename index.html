@@ -129,8 +129,8 @@ table {
       <input type="number" id="cantidad" placeholder="Cantidad" required>
       <button class="primary" type="submit">Agregar Producto</button>
     </form>
-    <!-- 🔹 Botón de retroceder -->
-  <button class="secondary" onclick="mostrarSeccion('viewer')">⬅️ Volver a vista usuario</button>
+      <!-- 🔹 Botón para volver al inicio -->
+  <button class="secondary" onclick="mostrarSeccion('inicio')">⬅️ Ir al inicio</button>
   </div>
 
   <!-- Sección usuario -->
@@ -291,14 +291,15 @@ function mostrarInventario(esAdmin) {
     totalGeneral += subtotal;
 
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${prod.id}</td>
-      <td><input type="number" value="${prod.cantidad}" onchange="cambiarCantidad(${JSON.stringify(prod.id)}, this.value)"></td>
-      <td>${prod.descripcion}</td>
-      <td>L ${prod.precio.toFixed(2)}</td>
-      <td>L ${subtotal.toFixed(2)}</td>
-      <td>${esAdmin ? `<button class="secondary" onclick="borrarProducto(${JSON.stringify(prod.id)})">❌</button>` : ""}</td>
-    `;
+   tr.innerHTML = `
+  <td>${prod.id}</td>
+  <td><input type="number" value="${prod.cantidad}" onchange="editarCampo(${prod.id}, 'cantidad', this.value)"></td>
+  <td><input type="text" value="${prod.descripcion}" onchange="editarCampo(${prod.id}, 'descripcion', this.value)"></td>
+  <td><input type="number" value="${prod.precio}" onchange="editarCampo(${prod.id}, 'precio', this.value)"></td>
+  <td>L ${(prod.precio * prod.cantidad).toFixed(2)}</td>
+  <td>${esAdmin ? `<button class="secondary" onclick="borrarProducto(${prod.id})">❌</button>` : ""}</td>
+`;
+
     tbody.appendChild(tr);
   });
 
@@ -314,6 +315,18 @@ function mostrarInventario(esAdmin) {
       });
       mostrarInventario(true);
     }
+function editarCampo(id, campo, valor) {
+  const prod = inventario.find(p => p.id == id);
+  if (prod) {
+    if (campo === "precio" || campo === "cantidad") {
+      prod[campo] = parseFloat(valor) || 0;
+    } else {
+      prod[campo] = valor;
+    }
+    guardarInventario();
+    mostrarInventario(true);
+  }
+}
 
     document.getElementById("productoForm").addEventListener("submit", function(e) {
       e.preventDefault();
