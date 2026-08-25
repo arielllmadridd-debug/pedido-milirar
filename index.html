@@ -293,13 +293,19 @@ function mostrarInventario(esAdmin) {
     totalGeneral += subtotal;
 
     const tr = document.createElement("tr");
-   tr.innerHTML = `
+tr.innerHTML = `
   <td>${prod.id}</td>
   <td><input type="number" value="${prod.cantidad}" onchange="editarCampo(${prod.id}, 'cantidad', this.value)"></td>
-  <td><input type="text" value="${prod.descripcion}" onchange="editarCampo(${prod.id}, 'descripcion', this.value)"></td>
-  <td><input type="number" value="${prod.precio}" onchange="editarCampo(${prod.id}, 'precio', this.value)"></td>
+  <td>${esAdmin 
+        ? `<input type="text" value="${prod.descripcion}" onchange="editarCampo(${prod.id}, 'descripcion', this.value)">` 
+        : prod.descripcion}</td>
+  <td>${esAdmin 
+        ? `<input type="number" value="${prod.precio}" onchange="editarCampo(${prod.id}, 'precio', this.value)">` 
+        : prod.precio.toFixed(2)}</td>
   <td>L ${(prod.precio * prod.cantidad).toFixed(2)}</td>
-  <td>${esAdmin ? `<button class="secondary" onclick="borrarProducto(${prod.id})">❌</button>` : ""}</td>
+  <td>${esAdmin 
+        ? `<button class="secondary" onclick="borrarProducto(${prod.id})">❌</button>` 
+        : ""}</td>
 `;
 
     tbody.appendChild(tr);
