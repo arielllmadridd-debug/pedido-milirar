@@ -342,7 +342,7 @@ function editarCampo(id, campo, valor) {
       e.preventDefault();
       const descripcion = document.getElementById("descripcion").value;
       const precio = parseFloat(document.getElementById("precio").value);
-      const cantidad = parseInt(document.getElementById("cantidad").value);
+      const cantidad = parseFload(document.getElementById("cantidad").value);
       const nuevo = {id: inventario.length+100, descripcion, precio, cantidad};
       inventario.push(nuevo);
       guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
@@ -387,7 +387,7 @@ function editarCampo(id, campo, valor) {
       e.preventDefault();
       const desc = document.getElementById("otroDesc").value;
       const precio = parseFloat(document.getElementById("otroPrecio").value);
-      const cantidad = parseInt(document.getElementById("otroCantidad").value);
+      const cantidad = parseFloat(document.getElementById("otroCantidad").value);
       inventario.push({id:"OTRO-"+contadorOtros, descripcion:desc, precio:precio, cantidad:cantidad});
       contadorOtros++;
       guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
