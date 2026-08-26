@@ -261,7 +261,7 @@ table {
 function cambiarCantidad(id, nuevaCantidad) {
   const prod = inventario.find(p => p.id == id);
   if (prod) {
-    prod.cantidad = parseInt(nuevaCantidad) || 0;
+    prod.cantidad = parsefloat(nuevaCantidad) || 0;
     guardarInventario();   // 🔹 aquí se guarda el cambio
     mostrarInventario(true); // refresca la tabla
   }
@@ -318,7 +318,7 @@ document.getElementById("totalGeneral").innerText = "TOTAL GENERAL: L " + totalG
     function cambiarCantidad(id, nuevaCantidad) {
       inventario.forEach(prod => {
         if (prod.id == id) {
-          prod.cantidad = parseInt(nuevaCantidad);
+          prod.cantidad = parseFloat(nuevaCantidad);
         }
       });
       mostrarInventario(true);
@@ -340,7 +340,7 @@ function editarCampo(id, campo, valor) {
       e.preventDefault();
       const descripcion = document.getElementById("descripcion").value;
       const precio = parseFloat(document.getElementById("precio").value);
-      const cantidad = parseFload(document.getElementById("cantidad").value);
+      const cantidad = parseFloat(document.getElementById("cantidad").value);
       const nuevo = {id: inventario.length+100, descripcion, precio, cantidad};
       inventario.push(nuevo);
       guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
