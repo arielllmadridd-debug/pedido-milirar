@@ -261,7 +261,7 @@ table {
 function cambiarCantidad(id, nuevaCantidad) {
   const prod = inventario.find(p => p.id == id);
   if (prod) {
-    prod.cantidad = parsefloat(nuevaCantidad) || 0;
+    prod.cantidad = parseFloat(nuevaCantidad) || 0;
     guardarInventario();   // 🔹 aquí se guarda el cambio
     mostrarInventario(true); // refresca la tabla
   }
@@ -315,14 +315,6 @@ inventario.forEach(prod => {
 document.getElementById("totalGeneral").innerText = "TOTAL GENERAL: L " + totalGeneral.toFixed(2);
 }
 
-    function cambiarCantidad(id, nuevaCantidad) {
-      inventario.forEach(prod => {
-        if (prod.id == id) {
-          prod.cantidad = parseFloat(nuevaCantidad);
-        }
-      });
-      mostrarInventario(true);
-    }
 function editarCampo(id, campo, valor) {
   const prod = inventario.find(p => p.id == id);
   if (prod) {
