@@ -257,15 +257,7 @@ table {
       inventario = JSON.parse(data);
     }
   }
-    // Cambiar cantidad y guardar
-function cambiarCantidad(id, nuevaCantidad) {
-  const prod = inventario.find(p => p.id == id);
-  if (prod) {
-    prod.cantidad = parseFloat(nuevaCantidad) || 0;
-    guardarInventario();   // 🔹 aquí se guarda el cambio
-    mostrarInventario(true); // refresca la tabla
-  }
-}
+
     function mostrarSeccion(id) {
       document.querySelectorAll("div").forEach(div => div.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
@@ -288,34 +280,34 @@ function mostrarInventario(esAdmin) {
   tbody.innerHTML = "";
   let totalGeneral = 0;
 
-inventario.forEach(prod => {
-  const precio = parseFloat(prod.precio) || 0;
-  const cantidad = parseFloat(prod.cantidad) || 0;
-  const subtotal = precio * cantidad;
-  totalGeneral += subtotal;
+  inventario.forEach(prod => {
+    const precio = parseFloat(prod.precio) || 0;
+    const cantidad = parseFloat(prod.cantidad) || 0;
+    const subtotal = precio * cantidad;
+    totalGeneral += subtotal;
 
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${prod.id}</td>
-    <td><input type="number" value="${cantidad}" onchange="editarCampo(${prod.id}, 'cantidad', this.value)"></td>
-    <td>${esAdmin 
-          ? `<input type="text" value="${prod.descripcion}" onchange="editarCampo(${prod.id}, 'descripcion', this.value)">` 
-          : prod.descripcion}</td>
-    <td>${esAdmin 
-          ? `<input type="number" value="${precio}" onchange="editarCampo(${prod.id}, 'precio', this.value)">` 
-          : precio.toFixed(2)}</td>
-    <td>L ${subtotal.toFixed(2)}</td>
-    <td>${esAdmin 
-          ? `<button class="secondary" onclick="borrarProducto(${prod.id})">❌</button>` 
-          : ""}</td>
-  `;
-  tbody.appendChild(tr);
-});
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${prod.id}</td>
+      <td><input type="number" value="${cantidad}" onchange="editarCampo(${prod.id}, 'cantidad', this.value, ${esAdmin})"></td>
+      <td>${esAdmin 
+            ? `<input type="text" value="${prod.descripcion}" onchange="editarCampo(${prod.id}, 'descripcion', this.value, ${esAdmin})">` 
+            : prod.descripcion}</td>
+      <td>${esAdmin 
+            ? `<input type="number" value="${precio}" onchange="editarCampo(${prod.id}, 'precio', this.value, ${esAdmin})">` 
+            : precio.toFixed(2)}</td>
+      <td>L ${subtotal.toFixed(2)}</td>
+      <td>${esAdmin 
+            ? `<button class="secondary" onclick="borrarProducto(${prod.id})">❌</button>` 
+            : ""}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-document.getElementById("totalGeneral").innerText = "TOTAL GENERAL: L " + totalGeneral.toFixed(2);
+  document.getElementById("totalGeneral").innerText = "TOTAL GENERAL: L " + totalGeneral.toFixed(2);
 }
 
-function editarCampo(id, campo, valor) {
+function editarCampo(id, campo, valor, esAdmin) {
   const prod = inventario.find(p => p.id == id);
   if (prod) {
     if (campo === "precio" || campo === "cantidad") {
@@ -324,7 +316,16 @@ function editarCampo(id, campo, valor) {
       prod[campo] = valor;
     }
     guardarInventario();
-    mostrarInventario(esAdmin);
+    mostrarInventario(esAdmin);  // ✅ ahora sí refresca en el momento
+  }
+}
+
+function cambiarCantidad(id, nuevaCantidad) {
+  const prod = inventario.find(p => p.id == id);
+  if (prod) {
+    prod.cantidad = parseFloat(nuevaCantidad) || 0;  // ✅ siempre número
+    guardarInventario();
+    mostrarInventario(true); // ✅ refresca la tabla
   }
 }
 
