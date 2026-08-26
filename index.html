@@ -255,6 +255,7 @@ table {
     const data = localStorage.getItem("inventario");
     if (data) {
       inventario = JSON.parse(data);
+      inventario.forEach(prod => prod.cantidad =0); //fuerza a cero a recargar
     }
   }
 
