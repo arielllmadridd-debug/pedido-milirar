@@ -334,7 +334,7 @@ function cambiarCantidad(id, nuevaCantidad) {
       const descripcion = document.getElementById("descripcion").value;
       const precio = parseFloat(document.getElementById("precio").value);
       const cantidad = parseFloat(document.getElementById("cantidad").value);
-      const nuevo = {id: inventario.length+100, descripcion, precio, cantidad};
+      const nuevo = {id: inventario.length+100, descripcion, precio, cantidad: 0};
       inventario.push(nuevo);
       guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
       mostrarInventario(true);
@@ -379,7 +379,7 @@ function cambiarCantidad(id, nuevaCantidad) {
       const desc = document.getElementById("otroDesc").value;
       const precio = parseFloat(document.getElementById("otroPrecio").value);
       const cantidad = parseFloat(document.getElementById("otroCantidad").value);
-      inventario.push({id:"OTRO-"+contadorOtros, descripcion:desc, precio:precio, cantidad:cantidad});
+      inventario.push({id:"OTRO-"+contadorOtros, descripcion:desc, precio:precio, cantidad: 0});
       contadorOtros++;
       guardarInventario();   // 🔹 ahora sí se guarda en LocalStorage
       mostrarInventario(false);
